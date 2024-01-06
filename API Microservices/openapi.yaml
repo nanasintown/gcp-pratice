@@ -1,0 +1,192 @@
+openapi: 3.0.0
+info:
+  title: CSS2023
+  version: 1.0.11
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - name
+        - author
+        - isbn
+        - rating
+        - publish_date
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        author:
+          type: string
+          maxLength: 50
+        isbn:
+          type: string
+          maxLength: 13
+        rating:
+          type: number
+          minimum: 0
+          maximum: 5
+        publish_date:
+          type: string
+          format: date-time
+    Books:
+      type: array
+      items:
+        $ref: '#/components/schemas/Book'
+    Success:
+      type: object
+      properties:
+        message:
+          type: string
+        id:
+          type: string
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+paths:
+  /book:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        'default':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Default response'
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+          description: 'Book successfully created'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Unprocessable entity'
+  /books:
+    get:
+      parameters:
+        - in: query
+          name: author
+          schema:
+            type: string
+      responses:
+        'default':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Default response'
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+          description: 'OK'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Not found'
+  /book/{book_id}:
+    parameters:
+      - name: book_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        'default':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Default response'
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 50
+                  author:
+                    type: string
+                    maxLength: 50
+                  isbn:
+                    type: string
+                    maxLength: 13
+                  rating:
+                    type: number
+                    maximum: 5
+                  publish_date:
+                    type: string
+                    format: date-time
+          description: 'OK'
+        '404':
+          description: 'Not found'
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        'default':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Default response'
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+          description: 'OK'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Not found'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Unprocessable entity'
+    delete:
+      responses:
+        'default':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Default response'
+        '204':
+          description: 'No content'
+        '404':
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

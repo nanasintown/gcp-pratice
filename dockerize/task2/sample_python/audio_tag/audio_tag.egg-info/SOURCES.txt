@@ -1,0 +1,7 @@
+LICENSE
+README.md
+setup.py
+audio_tag.egg-info/PKG-INFO
+audio_tag.egg-info/SOURCES.txt
+audio_tag.egg-info/dependency_links.txt
+audio_tag.egg-info/top_level.txt
